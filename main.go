@@ -12,11 +12,14 @@ import (
 
 var args struct {
 	Debug        *bool  `arg:"-D"`
-	Username     string `arg:"-u,--username,env:BITBUCKET_USERNAME,required"`
-	Password     string `arg:"-p,--password,env:BITBUCKET_PASSWORD,required"`
-	Endpoint     string `arg:"-e,--endpoint,env:BITBUCKET_ENDPOINT,required"`
+	Username     string `arg:"-u,--username,env:BITBUCKET_USERNAME"`
+	Password     string `arg:"-p,--password,env:BITBUCKET_PASSWORD"`
+	Endpoint     string `arg:"-e,--endpoint,env:BITBUCKET_ENDPOINT"`
 	AuthorFilter string `arg:"-a,--author-filter,env:BITBUCKET_AUTHOR_FILTER"`
+	Version      *bool  `arg:"-v"`
 }
+
+var version = "unknown"
 
 type Client struct {
 	bitbucketClient *bitbucket.APIClient
@@ -29,6 +32,23 @@ func main() {
 
 	if args.Debug != nil && *args.Debug {
 		logger.SetLevel(logrus.DebugLevel)
+	}
+
+	if args.Version != nil && *args.Version {
+		fmt.Printf("approve-bot %s\n", version)
+		return
+	}
+
+	if args.Endpoint == "" {
+		logger.Fatalf("provide and endpoint")
+	}
+
+	if args.Username == "" {
+		logger.Fatalf("username cannot be empty")
+	}
+
+	if args.Password == "" {
+		logger.Fatalf("password cannot be empty")
 	}
 
 	_, err := url.Parse(args.Endpoint)

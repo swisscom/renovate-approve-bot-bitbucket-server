@@ -1,8 +1,16 @@
 REGISTRY=tools-docker-local.artifactory.swisscom.com
 IMAGE=swisscom/bitbucket-approver-bot
-TAG=$(shell head -n1 VERSION)
+VERSION=$(shell head -n1 VERSION)
+TAG=$(VERSION)
 
-.PHONY: docker-build, docker-run, docker-push
+.PHONY: clean, docker-build, docker-run, docker-push
+
+build: approve-bot
+	CGO_ENABLED=0 go build \
+		-o ./approve-bot \
+		-ldflags="-X 'main.version=$(VERSION)'"
+clean:
+	rm ./approve-bot
 
 docker-build:
 	docker build . \
