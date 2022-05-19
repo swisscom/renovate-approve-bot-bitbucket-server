@@ -147,7 +147,8 @@ func fetchAllPrs(c Client, start int, size int, logger *logrus.Logger, prsChanne
 			prsChannel <- v
 		}
 
-		if isLastPage {
+		len := len(prs) // isLastPage is not reliable, so we check for len < size additionally
+		if isLastPage || len < size {
 			break
 		}
 
