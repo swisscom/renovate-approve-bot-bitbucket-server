@@ -6,5 +6,6 @@ WORKDIR /app
 RUN make build
 
 FROM alpine:3.15
+RUN apk add --no-cache bash
 COPY --from=builder /app/approve-bot /approve-bot
 ENTRYPOINT ["/approve-bot"]
