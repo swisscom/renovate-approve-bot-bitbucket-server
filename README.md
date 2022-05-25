@@ -36,7 +36,7 @@ make build
 
 ## Usage
 
-```bash
+```text
 Usage: approve-bot [--debug] --username USERNAME --password PASSWORD --endpoint ENDPOINT [--author-filter AUTHOR-FILTER]
 
 Options:
@@ -45,6 +45,7 @@ Options:
   --password PASSWORD, -p PASSWORD [env: BITBUCKET_PASSWORD]
   --endpoint ENDPOINT, -e ENDPOINT [env: BITBUCKET_ENDPOINT]
   --author-filter AUTHOR-FILTER, -a AUTHOR-FILTER [env: BITBUCKET_AUTHOR_FILTER]
+  --add-comment, -c      "true" to add a comment in addition to approving a PR, "false" to not add a comment. [default: true, env: BITBUCKET_ADD_COMMENT]
   --help, -h             display this help and exit
 
 ```
@@ -58,6 +59,7 @@ read -s -r BITBUCKET_PASSWORD
 export BITBUCKET_PASSWORD
 export BITBUCKET_ENDPOINT=https://bitbucket.example.com/rest
 export BITBUCKET_AUTHOR_FILTER=renovate-bot # Only approve PRs created by this user
+export BITBUCKET_ADD_COMMENT=true
 make REGISTRY= IMAGE=your-username/bb-approve-bot docker-run
 ```
 
