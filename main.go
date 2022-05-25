@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"github.com/alexflint/go-arg"
 	bitbucket "github.com/gfleury/go-bitbucket-v1"
 	"github.com/sirupsen/logrus"
@@ -17,7 +16,7 @@ var args struct {
 	Password     string `arg:"-p,--password,env:BITBUCKET_PASSWORD"`
 	Endpoint     string `arg:"-e,--endpoint,env:BITBUCKET_ENDPOINT"`
 	AuthorFilter string `arg:"-a,--author-filter,env:BITBUCKET_AUTHOR_FILTER"`
-	AddComment   bool   `arg:"-c,--add-comment,env:BITBUCKET_ADD_COMMENT" default:"true" help:"\"true\" to add a comment in addition to approving a PR, \"false\" to not add a comment."`
+	AddComment   *bool  `arg:"-c,--add-comment,env:BITBUCKET_ADD_COMMENT" default:"true" help:"\"true\" to add a comment in addition to approving a PR, \"false\" to not add a comment."`
 	Version      *bool  `arg:"-v"`
 }
 
@@ -30,10 +29,6 @@ type Client struct {
 
 func main() {
 	logger := logrus.New()
-
-	if os.Getenv("BITBUCKET_ADD_COMMENT") == "" {
-		os.Setenv("BITBUCKET_ADD_COMMENT", "true")
-	}
 	arg.MustParse(&args)
 
 	if args.Debug != nil && *args.Debug {
@@ -90,7 +85,7 @@ func main() {
 			v.Links.Self[0].Href,
 		)
 
-		if args.AddComment {
+		if args.AddComment != nil && *args.AddComment {
 			err = c.addComment(&v)
 			if err != nil {
 				logger.Warnf("unable to add comment: %v. Skipping PR.", err)
