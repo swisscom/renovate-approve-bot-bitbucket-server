@@ -1,8 +1,10 @@
 FROM golang:1.17-alpine3.15 AS builder
+ARG VERSION=docker-unknown
+RUN apk add --no-cache make bash
 COPY . /app
 WORKDIR /app
-RUN CGO_ENABLED=0 go build -o ./approver-bot
+RUN make build
 
 FROM alpine:3.15
-COPY --from=builder /app/approver-bot /approver-bot
-ENTRYPOINT ["/approver-bot"]
+COPY --from=builder /app/approve-bot /approve-bot
+ENTRYPOINT ["/approve-bot"]
