@@ -76,6 +76,7 @@ func main() {
 		if args.AuthorFilter != "" {
 			if v.Author.User.Slug != args.AuthorFilter {
 				logger.Infof("skipping %d because %s != %s", v.ID, v.Author.User.Slug, args.AuthorFilter)
+				continue
 			}
 		}
 
