@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 var args struct {
@@ -26,6 +27,8 @@ type Client struct {
 	bitbucketClient *bitbucket.APIClient
 	logger          *logrus.Logger
 }
+
+const MANUAL_MERGE_MESSAGE = "**Automerge**: Disabled by config. Please merge this manually once you are satisfied."
 
 func main() {
 	logger := logrus.New()
@@ -78,6 +81,11 @@ func main() {
 				logger.Infof("skipping %d because %s != %s", v.ID, v.Author.User.Slug, args.AuthorFilter)
 				continue
 			}
+		}
+
+		if strings.Contains(v.Description, MANUAL_MERGE_MESSAGE) {
+			logger.Infof("skipping %s (id: %d) because renovate bot 'automerge' is disabled", v.Title, v.ID)
+			continue
 		}
 
 		c.logger.Infof("Auto-approving %s - %s - %s",
